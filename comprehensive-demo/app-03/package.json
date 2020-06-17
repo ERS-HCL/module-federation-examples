@@ -1,5 +1,5 @@
 {
-  "name": "app-03",
+  "name": "@comprehensive-demo/app-03",
   "version": "0.0.0",
   "private": true,
   "dependencies": {
@@ -11,12 +11,13 @@
     "react-dom": "^16.13.0",
     "serve": "^11.3.0",
     "styled-components": "^5.0.1",
-    "webpack": "git://github.com/webpack/webpack.git#dev-1",
+    "webpack": "5.0.0-beta.17",
     "webpack-cli": "^3.3.11"
   },
   "scripts": {
     "start": "webpack --watch",
     "build": "webpack --mode production",
-    "serve": "serve dist -p 3003"
+    "serve": "serve dist -p 3003",
+    "clean": "rm -rf dist"
   }
 }

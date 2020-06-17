@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const ModuleFederationPlugin = require("webpack").container
+  .ModuleFederationPlugin;
 const path = require("path");
 
 module.exports = {
@@ -17,6 +18,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: "babel-loader",
+        exclude: /node_modules/,
         options: {
           presets: ["@babel/preset-react"],
         },

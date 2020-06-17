@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const ModuleFederationPlugin = require("webpack").container
+  .ModuleFederationPlugin;
 const path = require("path");
 
 module.exports = {
@@ -12,11 +13,13 @@ module.exports = {
   output: {
     publicPath: "http://localhost:3002/",
   },
+
   module: {
     rules: [
       {
         test: /\.jsx?$/,
         loader: "babel-loader",
+        exclude: /node_modules/,
         options: {
           presets: ["@babel/preset-react"],
         },
@@ -29,7 +32,7 @@ module.exports = {
       library: { type: "var", name: "app2" },
       filename: "remoteEntry.js",
       exposes: {
-        Example: "./src/Example",
+        "./Example": "./src/Example",
       },
       shared: {
         react: "react",

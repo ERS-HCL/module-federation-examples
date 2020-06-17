@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const ModuleFederationPlugin = require("webpack").container
+  .ModuleFederationPlugin;
 const path = require("path");
 
 module.exports = {
@@ -10,10 +11,20 @@ module.exports = {
     port: 3003,
     historyApiFallback: true,
     hot: false,
-    hotOnly: false
+    hotOnly: false,
   },
   output: {
-    publicPath: "http://localhost:3003/"
+    publicPath: "http://localhost:3003/",
+  },
+  resolve: {
+    alias: {
+      events: "events",
+    },
+  },
+  resolve: {
+    alias: {
+      events: "events",
+    },
   },
   module: {
     rules: [
@@ -22,10 +33,13 @@ module.exports = {
         loader: "babel-loader",
         exclude: /node_modules/,
         options: {
-          presets: ["@babel/preset-react"]
-        }
-      }
-    ]
+          presets: ["@babel/preset-react"],
+        },
+      },
+    ],
+  },
+  resolve: {
+    alias: { events: "events" },
   },
   plugins: [
     new ModuleFederationPlugin({
@@ -33,16 +47,22 @@ module.exports = {
       library: { type: "var", name: "sales" },
       filename: "remoteEntry.js",
       remotes: {
-        shell: "shell"
+        shell: "shell",
       },
       exposes: {
-        TodayWidget: "./src/TodayWidget",
-        DepositsWidget: "./src/DepositsWidget"
+        "./TodayWidget": "./src/TodayWidget",
+        "./DepositsWidget": "./src/DepositsWidget",
       },
-      shared: ["react", "react-dom", "@material-ui/core", "@material-ui/icons"]
+      shared: [
+        "react",
+        "react-dom",
+        "@material-ui/core",
+        "@material-ui/icons",
+        "recharts",
+      ],
     }),
     new HtmlWebpackPlugin({
-      template: "./public/index.html"
-    })
-  ]
+      template: "./public/index.html",
+    }),
+  ],
 };

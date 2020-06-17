@@ -1,27 +1,28 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const { ModuleFederationPlugin } = require("webpack").container;
 const path = require("path");
-
+const deps = require("./package.json").dependencies;
 module.exports = {
   entry: "./src/index",
   mode: "development",
   devServer: {
     contentBase: path.join(__dirname, "dist"),
-    port: 3001
+    port: 3001,
   },
   output: {
-    publicPath: "http://localhost:3001/"
+    publicPath: "http://localhost:3001/",
   },
   module: {
     rules: [
       {
         test: /\.jsx?$/,
         loader: "babel-loader",
+        exclude: /node_modules/,
         options: {
-          presets: ["@babel/preset-react"]
-        }
-      }
-    ]
+          presets: ["@babel/preset-react"],
+        },
+      },
+    ],
   },
   plugins: [
     new ModuleFederationPlugin({
@@ -29,21 +30,28 @@ module.exports = {
       library: { type: "var", name: "app1" },
       filename: "remoteEntry.js",
       remotes: {
-        app2: "app2"
+        app2: "app2",
       },
       exposes: {
-        Button: "./src/Button"
+        "./Button": "./src/Button",
       },
       // sharing code based on the installed version, to allow for multiple vendors with different versions
-      shared: ["react","react-dom"].reduce((shared,pkg)=>{
-        // you can also trim the patch version off so you share at the feature version level
-        // react-16.8, not react-16.8.3, Better vendor sharing will be available as you'd share 16.8.x
-        Object.assign(shared,{[`${pkg}-${require(pkg).version}`]:pkg});
-        return shared
-      },{})
+      shared: {
+        ...deps,
+        react: {
+          eager: true,
+          singleton: true,
+          requiredVersion: deps.react,
+        },
+        "react-dom": {
+          eager: true,
+          singleton: true,
+          requiredVersion: deps["react-dom"],
+        },
+      },
     }),
     new HtmlWebpackPlugin({
-      template: "./public/index.html"
-    })
-  ]
+      template: "./public/index.html",
+    }),
+  ],
 };

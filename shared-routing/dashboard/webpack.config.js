@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const ModuleFederationPlugin = require("webpack").container
+  .ModuleFederationPlugin;
 const path = require("path");
 
 module.exports = {
@@ -10,10 +11,15 @@ module.exports = {
     port: 3001,
     historyApiFallback: true,
     hot: false,
-    hotOnly: false
+    hotOnly: false,
   },
   output: {
-    publicPath: "http://localhost:3001/"
+    publicPath: "http://localhost:3001/",
+  },
+  resolve: {
+    alias: {
+      events: "events",
+    },
   },
   module: {
     rules: [
@@ -22,10 +28,10 @@ module.exports = {
         loader: "babel-loader",
         exclude: /node_modules/,
         options: {
-          presets: ["@babel/preset-react"]
-        }
-      }
-    ]
+          presets: ["@babel/preset-react"],
+        },
+      },
+    ],
   },
   plugins: [
     new ModuleFederationPlugin({
@@ -35,15 +41,15 @@ module.exports = {
       remotes: {
         order: "order",
         sales: "sales",
-        shell: "shell"
+        shell: "shell",
       },
       exposes: {
-        DashboardService: "./src/DashboardService"
+        "./DashboardService": "./src/DashboardService",
       },
-      shared: ["react", "react-dom", "@material-ui/core", "@material-ui/icons"]
+      shared: ["react", "react-dom", "@material-ui/core", "@material-ui/icons"],
     }),
     new HtmlWebpackPlugin({
-      template: "./public/index.html"
-    })
-  ]
+      template: "./public/index.html",
+    }),
+  ],
 };

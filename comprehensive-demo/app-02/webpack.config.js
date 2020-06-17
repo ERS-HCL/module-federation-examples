@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const ModuleFederationPlugin = require("webpack").container
+  .ModuleFederationPlugin;
 
 module.exports = {
   entry: "./src/index",
@@ -9,15 +10,15 @@ module.exports = {
   devtool: "source-map",
 
   optimization: {
-    minimize: false
+    minimize: false,
   },
 
   output: {
-    publicPath: "http://localhost:3002/"
+    publicPath: "http://localhost:3002/",
   },
 
   resolve: {
-    extensions: [".jsx", ".js", ".json"]
+    extensions: [".jsx", ".js", ".json"],
   },
 
   module: {
@@ -25,11 +26,12 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: require.resolve("babel-loader"),
+        exclude: /node_modules/,
         options: {
-          presets: [require.resolve("@babel/preset-react")]
-        }
-      }
-    ]
+          presets: [require.resolve("@babel/preset-react")],
+        },
+      },
+    ],
   },
 
   plugins: [
@@ -39,17 +41,17 @@ module.exports = {
       filename: "remoteEntry.js",
       remotes: {
         app_01: "app_01",
-        app_03: "app_03"
+        app_03: "app_03",
       },
       exposes: {
-        Dialog: "./src/Dialog",
-        Tabs: "./src/Tabs"
+        "./Dialog": "./src/Dialog",
+        "./Tabs": "./src/Tabs",
       },
-      shared: ["react", "react-dom", "@material-ui/core", "react-router-dom"]
+      shared: ["react", "react-dom", "@material-ui/core", "react-router-dom"],
     }),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
-      chunks: ["main"]
-    })
-  ]
+      chunks: ["main"],
+    }),
+  ],
 };

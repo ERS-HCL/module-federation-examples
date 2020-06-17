@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const ModuleFederationPlugin = require("webpack").container
+  .ModuleFederationPlugin;
 const path = require("path");
 
 module.exports = {
@@ -7,10 +8,10 @@ module.exports = {
   mode: "development",
   devServer: {
     contentBase: path.join(__dirname, "dist"),
-    port: 3001
+    port: 3001,
   },
   output: {
-    publicPath: "http://localhost:3001/"
+    publicPath: "http://localhost:3001/",
   },
   module: {
     rules: [
@@ -19,10 +20,10 @@ module.exports = {
         loader: "babel-loader",
         exclude: /node_modules/,
         options: {
-          presets: ["@babel/preset-react"]
-        }
-      }
-    ]
+          presets: ["@babel/preset-react"],
+        },
+      },
+    ],
   },
   plugins: [
     new ModuleFederationPlugin({
@@ -30,16 +31,16 @@ module.exports = {
       library: { type: "var", name: "app1" },
       filename: "remoteEntry.js",
       remotes: {
-        app2: "app2"
+        app2: "app2",
       },
       exposes: {
-        Navigation: "./src/Navigation",
-        routes: "./src/routes"
+        "./Navigation": "./src/Navigation",
+        "./routes": "./src/routes",
       },
-      shared: ["react", "react-dom", "react-router-dom"]
+      shared: ["react", "react-dom", "react-router-dom"],
     }),
     new HtmlWebpackPlugin({
-      template: "./public/index.html"
-    })
-  ]
+      template: "./public/index.html",
+    }),
+  ],
 };

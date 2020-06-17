@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const ModuleFederationPlugin = require("webpack").container
+  .ModuleFederationPlugin;
 const path = require("path");
 
 module.exports = {
@@ -10,10 +11,15 @@ module.exports = {
     port: 3002,
     historyApiFallback: true,
     hot: false,
-    hotOnly: false
+    hotOnly: false,
   },
   output: {
-    publicPath: "http://localhost:3002/"
+    publicPath: "http://localhost:3002/",
+  },
+  resolve: {
+    alias: {
+      events: "events",
+    },
   },
   module: {
     rules: [
@@ -22,10 +28,10 @@ module.exports = {
         loader: "babel-loader",
         exclude: /node_modules/,
         options: {
-          presets: ["@babel/preset-react"]
-        }
-      }
-    ]
+          presets: ["@babel/preset-react"],
+        },
+      },
+    ],
   },
   plugins: [
     new ModuleFederationPlugin({
@@ -33,16 +39,16 @@ module.exports = {
       library: { type: "var", name: "order" },
       filename: "remoteEntry.js",
       remotes: {
-        shell: "shell"
+        shell: "shell",
       },
       exposes: {
-        RecentOrdersWidget: "./src/RecentOrdersWidget",
-        OrderService: "./src/OrderService"
+        "./RecentOrdersWidget": "./src/RecentOrdersWidget",
+        "./OrderService": "./src/OrderService",
       },
-      shared: ["react", "react-dom", "@material-ui/core", "@material-ui/icons"]
+      shared: ["react", "react-dom", "@material-ui/core", "@material-ui/icons"],
     }),
     new HtmlWebpackPlugin({
-      template: "./public/index.html"
-    })
-  ]
+      template: "./public/index.html",
+    }),
+  ],
 };

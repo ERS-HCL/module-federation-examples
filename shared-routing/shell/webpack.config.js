@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const ModuleFederationPlugin = require("webpack").container
+  .ModuleFederationPlugin;
 const path = require("path");
 
 module.exports = {
@@ -10,10 +11,15 @@ module.exports = {
     port: 3000,
     historyApiFallback: true,
     hot: false,
-    hotOnly: false
+    hotOnly: false,
+  },
+  resolve: {
+    alias: {
+      events: "events",
+    },
   },
   output: {
-    publicPath: "http://localhost:3000/"
+    publicPath: "http://localhost:3000/",
   },
   module: {
     rules: [
@@ -22,10 +28,10 @@ module.exports = {
         loader: "babel-loader",
         exclude: /node_modules/,
         options: {
-          presets: ["@babel/preset-react"]
-        }
-      }
-    ]
+          presets: ["@babel/preset-react"],
+        },
+      },
+    ],
   },
   plugins: [
     new ModuleFederationPlugin({
@@ -35,11 +41,11 @@ module.exports = {
       remotes: {
         order: "order",
         dashboard: "dashboard",
-        profile: 'profile',
+        profile: "profile",
       },
       exposes: {
-        Shell: "./src/Shell",
-        Service: "./src/Service"
+        "./Shell": "./src/Shell",
+        "./Service": "./src/Service",
       },
       shared: [
         "react",
@@ -48,12 +54,11 @@ module.exports = {
         "@material-ui/icons",
         "react-router",
         "react-router-dom",
-        // workaround to ensure code is provided before booting app
-        './src/Service'
-      ]
+        "./src/Service",
+      ],
     }),
     new HtmlWebpackPlugin({
-      template: "./public/index.html"
-    })
-  ]
+      template: "./public/index.html",
+    }),
+  ],
 };

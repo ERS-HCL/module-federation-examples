@@ -6,27 +6,45 @@
   "author": "Zack Jackson <zackary.l.jackson@gmail.com> (https://github.com/ScriptedAlchemy)",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "basic-host-remote/*",
-    "bi-directional/*",
-    "self-healing/*",
-    "comprehensive-demo/*",
-    "server-side-rendering/*",
-    "dynamic-system-host/*",
-    "shared-context/*",
-    "shared-routing/*",
-    "shared-routes2/*",
-    "typescript/*",
-    "version-discrepancy/*",
-    "redux-reducer-injection/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "basic-host-remote/*",
+      "bi-directional/*",
+      "self-healing/*",
+      "comprehensive-demo/*",
+      "server-side-rendering/*",
+      "dynamic-system-host/*",
+      "shared-context/*",
+      "shared-routing/*",
+      "shared-routes2/*",
+      "typescript/*",
+      "nested/*",
+      "version-discrepancy/*",
+      "redux-reducer-injection/*",
+      "angular-universal-ssr/*",
+      "advanced-api/dynamic-remotes/*",
+      "advanced-api/automatic-vendor-sharing/*"
+    ],
+    "nohoist": [
+      "**/svelte",
+      "**/svelte/**",
+      "**/svelte-loader",
+      "**/svelte-loader/**",
+      "**/webpack",
+      "**/webpack/**",
+      "**/enhanced-resolve",
+      "**/enhanced-resolve/**"
+    ]
+  },
   "devDependencies": {
-    "husky": "^4.2.5",
-    "lerna": "^3.16.4",
-    "prettier": "2.0.4",
-    "pretty-quick": "^2.0.1"
+    "husky": "4.2.5",
+    "lerna": "3.22.0",
+    "prettier": "2.0.5",
+    "pretty-quick": "2.0.1",
+    "concurrently": "5.2.0"
   },
   "scripts": {
+    "submodules": "git pull --recurse-submodules",
     "prettier": "prettier --write \"**/*.{js,json,md,ts,tsx}\"",
     "prettier:check": "prettier --list-different \"**/*.{js,json,md,ts,tsx}\""
   }

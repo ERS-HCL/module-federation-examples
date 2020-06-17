@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const ModuleFederationPlugin = require("webpack").container
+  .ModuleFederationPlugin;
 
 module.exports = {
   entry: "./src/index",
@@ -9,15 +10,15 @@ module.exports = {
   devtool: "source-map",
 
   optimization: {
-    minimize: false
+    minimize: false,
   },
 
   output: {
-    publicPath: "http://localhost:3001/"
+    publicPath: "http://localhost:3001/",
   },
 
   resolve: {
-    extensions: [".jsx", ".js", ".json"]
+    extensions: [".jsx", ".js", ".json"],
   },
 
   module: {
@@ -25,15 +26,16 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: require.resolve("babel-loader"),
+        exclude: /node_modules/,
         options: {
-          presets: [require.resolve("@babel/preset-react")]
-        }
+          presets: [require.resolve("@babel/preset-react")],
+        },
       },
       {
         test: /\.md$/,
-        loader: "raw-loader"
-      }
-    ]
+        loader: "raw-loader",
+      },
+    ],
   },
 
   plugins: [
@@ -48,13 +50,13 @@ module.exports = {
         app_05: "app_05",
       },
       exposes: {
-        SideNav: "./src/SideNav",
-        Page: "./src/Page"
+        "./SideNav": "./src/SideNav",
+        "./Page": "./src/Page",
       },
-      shared: ["react", "react-dom", "@material-ui/core", "react-router-dom"]
+      shared: ["react", "react-dom", "@material-ui/core", "react-router-dom"],
     }),
     new HtmlWebpackPlugin({
-      template: "./public/index.html"
-    })
-  ]
+      template: "./public/index.html",
+    }),
+  ],
 };
